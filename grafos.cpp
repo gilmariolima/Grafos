@@ -12,7 +12,7 @@ using namespace std;
 
 class vertice{
     private:
-        int lable;
+        string lable;
         string cor;
         int d;
         int f;
@@ -20,7 +20,7 @@ class vertice{
         string nome_seta2;
         string nome_seta3;
     public:
-        vertice(int lable, string cor, int d, int f){
+        vertice(string lable, string cor, int d, int f){
             set_lable(lable);
             set_cor(cor);
             set_d(d);
@@ -28,7 +28,7 @@ class vertice{
         }
         vertice(){}
 
-        void set_lable(int lable){this->lable = lable;}
+        void set_lable(string lable){this->lable = lable;}
         void set_cor(string cor){this->cor = cor;}
         void set_d(int d){this->d = d;}
         void set_f(int f){this->f = f;}
@@ -38,7 +38,7 @@ class vertice{
             else if(id == 3) nome_seta3 = nome;
         }
 
-        int get_lable(){return lable;}
+        string get_lable(){return lable;}
         string get_cor(){return cor;}
         int get_d(){return d;}
         int get_f(){return f;}
@@ -54,14 +54,16 @@ class vertice{
         vertice * prox;
 };
 
-int tam = 1;
+int tam = 0;
 int mark = 0;
 vertice * inicio = NULL;
 vertice * fim = NULL;
 
+string alfa[] = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
+
 void cadastrar(){
     vertice * novo = new(vertice);
-    novo->set_lable(tam);
+    novo->set_lable(alfa[tam]);
     novo->set_cor("Branco");
     novo->prox = NULL;
     novo->seta1 = NULL;
@@ -101,9 +103,9 @@ void ver(){
             else if(aux->get_nome_seta(3) == "Avanco")cout << VERMELHO"--> " << aux->seta3->get_lable()<<RESET << " - ";
             else if(aux->get_nome_seta(3) == "Cruzamento")cout << ROXO"--> " << aux->seta3->get_lable()<<RESET << " - ";
            
-        if(aux->seta1 == NULL)cout <<"\t\t\t df: " << aux->get_d()<<"/"<<aux->get_f();
-        else if(aux->seta2 == NULL)cout <<"\t\t df: " << aux->get_d()<<"/"<<aux->get_f();
-        else if(aux->seta3 == NULL)cout << "\t df: " << aux->get_d()<<"/"<<aux->get_f();
+        if(aux->seta1 == NULL)cout <<"\t\t\t    df: " << aux->get_d()<<"/"<<aux->get_f();
+        else if(aux->seta2 == NULL)cout <<"\t\t    df: " << aux->get_d()<<"/"<<aux->get_f();
+        else if(aux->seta3 == NULL)cout << "\t    df: " << aux->get_d()<<"/"<<aux->get_f();
         else cout << "df: " << aux->get_d()<<"/"<<aux->get_f();
         cout << endl;
         aux = aux->prox;
@@ -147,37 +149,31 @@ void deletar_tudo(){
     mark = 0;
 }
 
-void ligacao(int x, int y){
-    vertice * aux = inicio;
 
-    while(aux->get_lable() != x){
+void ligacao(string a, string x, string y, string z){
+    vertice * aux = inicio;
+    while(aux->get_lable() != a){
         aux = aux->prox;
     }
-    if(aux->get_lable() == x){
+    if(aux->get_lable() == a){
+        vertice * aux1 = inicio;
         vertice * aux2 = inicio;
-        while(aux2->get_lable() != y){
-            aux2 = aux2->prox;
-        }
-        if(aux2->get_lable() == y){
-            if(aux->seta1 == NULL){
-                aux->seta1 = aux2;
-            }else if(aux->seta2 == NULL){
-                if(aux->seta1->get_lable() > aux2->get_lable()){
-                    aux->seta2 = aux->seta1;
-                    aux->seta1 = aux2;
-                }else if(aux->seta1->get_lable() < aux2->get_lable()){
+        vertice * aux3 = inicio;
+        if(x != "-"){
+            while(aux1->get_lable() != x)
+                aux1 = aux1->prox;
+            if(aux1->get_lable() == x)
+                aux->seta1 = aux1;
+            if(y != "-"){
+                while(aux2->get_lable() != y)
+                    aux2 = aux2->prox;
+                if(aux2->get_lable() == y)
                     aux->seta2 = aux2;
-                }
-            }else{
-                if(aux->seta1->get_lable() > aux2->get_lable()){
-                    aux->seta3 = aux->seta2;
-                    aux->seta2 = aux->seta1;
-                    aux->seta1 = aux2;
-                }else if(aux->seta2->get_lable() > aux2->get_lable()){
-                    aux->seta3 = aux->seta2;
-                    aux->seta2 = aux2;
-                }else{
-                    aux->seta3 = aux2;
+                if(z != "-"){
+                    while(aux3->get_lable() != z)
+                        aux3 = aux3->prox;
+                    if(aux3->get_lable() == z)
+                        aux->seta3 = aux3;
                 }
             }
         }
@@ -232,11 +228,9 @@ void dfs_visit(vertice * aux){
     aux->set_f(mark);
 }
 
-
-
 int main(){
     int opc = 1;
-    int x,y;
+    string a,x,y,z;
     while(opc != 0){
         cout << "[ 1 ] Cadastrar"<<endl;
         cout << "[ 2 ] Ligar Vertices"<<endl;
@@ -252,14 +246,19 @@ int main(){
         case 2:
             system("cls");
             
-            cout << "Ligar vertice x em y"<<endl;
-            cout << "x: ";
+            cout << "Ligacoes"<< endl;
+            cout << "Vertice: ";
+            cin>>a;
+            cout<<"Ligar em:\n";
+            cout<<"- ";
             cin>>x;
-            cout<<"y: ";
+            cout<<"- ";
             cin>>y;
+            cout<<"- ";
+            cin>>z;
+            ligacao(a,x,y,z);
             system("cls");
-            ligacao(x,y);
-            cout<<VERMELHO<<"Vertices ligados "<<x<<" --> "<<y<<RESET<<endl;
+            cout<<VERMELHO<<"Vertices ligados "<<RESET<<endl;
             break;
         case 3:
             mark = 0;
