@@ -109,14 +109,20 @@ void ver(){
         cout << endl;
         aux = aux->prox;
     }
+    cout << VERDE "\nVERDE -> ARVORE"<<RESET<<endl;
+    cout << AMARELO "AMARELO -> RETORNO"<<RESET<<endl;
+    cout << VERMELHO "VERMELHO -> AVANCO"<<RESET<<endl;
+    cout << ROXO "ROXO -> CRUZAMENTO"<<RESET<<endl;
     cout<<"\nMark = "<<mark<<"\n\n";
+    tam = 1;
+    mark = 0;
 }
 
 void ver_setas(){
     vertice * aux = inicio;
     while(aux != NULL){
+        aux->set_cor("Branco");
         cout <<aux->get_lable() << " - ";
-        cout << "cor: " << aux->get_cor() << " - ";
         if(aux->seta1!=NULL){
             cout << VERDE"--> " << aux->seta1->get_lable()<<RESET << " - ";
             if(aux->seta2 != NULL){
@@ -177,22 +183,6 @@ void ligacao(int x, int y){
             }
         }
     }
-}
-
-bool descendente(vertice * x, vertice * y){
-    vertice * aux = inicio;
-    bool passa = false;
-
-    while(aux->get_lable() != y->get_lable()){
-        if(aux->get_lable() == x->get_lable())passa = true;
-        if(aux->seta1 != NULL)aux = aux->seta1;
-        else if(aux->seta2 != NULL) aux = aux->seta2;
-        else if(aux->seta3 != NULL) aux = aux->seta3;
-    }
-    if(passa == true) return true;
-    else return false;
-
-    cout << "Nao foi possivel procurar" << endl;
 }
 
 void dfs_visit(vertice * aux){
