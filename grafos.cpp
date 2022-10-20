@@ -96,14 +96,16 @@ void ver(){
             else if(aux->get_nome_seta(2) == "Retorno")cout << AMARELO"--> " << aux->seta2->get_lable()<<RESET << " - ";
             else if(aux->get_nome_seta(2) == "Avanco")cout << VERMELHO"--> " << aux->seta2->get_lable()<<RESET << " - ";
             else if(aux->get_nome_seta(2) == "Cruzamento")cout << ROXO"--> " << aux->seta2->get_lable()<<RESET << " - ";
-
         if(aux->seta3!=NULL)
             if(aux->get_nome_seta(3) == "Arvore")cout << VERDE"--> " << aux->seta3->get_lable()<<RESET << " - ";
             else if(aux->get_nome_seta(3) == "Retorno")cout << AMARELO"--> " << aux->seta3->get_lable()<<RESET << " - ";
             else if(aux->get_nome_seta(3) == "Avanco")cout << VERMELHO"--> " << aux->seta3->get_lable()<<RESET << " - ";
             else if(aux->get_nome_seta(3) == "Cruzamento")cout << ROXO"--> " << aux->seta3->get_lable()<<RESET << " - ";
            
-            cout << "df: " << aux->get_d()<<"/"<<aux->get_f()<<" - ";
+        if(aux->seta1 == NULL)cout <<"\t\t\t df: " << aux->get_d()<<"/"<<aux->get_f();
+        else if(aux->seta2 == NULL)cout <<"\t\t df: " << aux->get_d()<<"/"<<aux->get_f();
+        else if(aux->seta3 == NULL)cout << "\t df: " << aux->get_d()<<"/"<<aux->get_f();
+        else cout << "df: " << aux->get_d()<<"/"<<aux->get_f();
         cout << endl;
         aux = aux->prox;
     }
@@ -204,38 +206,37 @@ void dfs_visit(vertice * aux){
                 dfs_visit(aux->seta1);
             }
             else if(aux->seta1->get_cor() == "Cinza")aux->set_nome_seta("Retorno", 1);
-            else if(aux->seta1->get_cor() == "Preto" && descendente(aux, aux->seta1) == true)
-                aux->set_nome_seta("Avanco", 1);
-            else if(aux->seta1->get_cor() == "Preto" && descendente(aux, aux->seta1) == false)
-                aux->set_nome_seta("Cruzamento", 1);
-        
+            else if(aux->seta1->get_cor() == "Preto"){
+                if(aux->get_d() < aux->seta1->get_f())
+                    aux->set_nome_seta("Avanco", 1);
+                else aux->set_nome_seta("Cruzamento", 1);
+            }
+
             if(aux->seta2!=NULL){
                 if(aux->seta2->get_cor() == "Branco"){
                     aux->set_nome_seta("Arvore", 2);
                     dfs_visit(aux->seta2);
                 }
                 else if(aux->seta2->get_cor() == "Cinza")aux->set_nome_seta("Retorno", 2);
-                else if(aux->seta2->get_cor() == "Preto" && descendente(aux, aux->seta2) == true)
+                else if(aux->seta2->get_cor() == "Preto"){
+                if(aux->get_d() < aux->seta2->get_f())
                     aux->set_nome_seta("Avanco", 2);
-                else if(aux->seta2->get_cor() == "Preto" && descendente(aux, aux->seta2) == false)
-                    aux->set_nome_seta("Cruzamento", 2);
-
+                else aux->set_nome_seta("Cruzamento", 2);
+            }
                 if(aux->seta3!=NULL){
                     if(aux->seta3->get_cor() == "Branco"){
                         aux->set_nome_seta("Arvore", 3);
                         dfs_visit(aux->seta3);
                     }
                     else if(aux->seta3->get_cor() == "Cinza")aux->set_nome_seta("Retorno", 3);
-                    else if(aux->seta3->get_cor() == "Preto" && descendente(aux, aux->seta3) == true)
-                        aux->set_nome_seta("Avanco", 3);
-                    else if(aux->seta3->get_cor() == "Preto" && descendente(aux, aux->seta3) == false)
-                        aux->set_nome_seta("Cruzamento", 3);
-                }
-                        
+                    else if(aux->seta3->get_cor() == "Preto"){
+                        if(aux->get_d() < aux->seta3->get_f())
+                            aux->set_nome_seta("Avanco", 3);
+                        else aux->set_nome_seta("Cruzamento", 3);
+                    }
+                }    
             }
-        
         }
-
     }
     aux->set_cor("Preto");
     mark++;
