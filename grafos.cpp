@@ -85,7 +85,6 @@ void ver(){
     vertice * aux = inicio;
     while(aux != NULL){
         cout <<aux->get_lable() << " - ";
-        cout << "cor: " << aux->get_cor() << " - ";
         if(aux->seta1!=NULL)
             if(aux->get_nome_seta(1) == "Arvore")cout << VERDE"--> " << aux->seta1->get_lable()<<RESET << " - ";
             else if(aux->get_nome_seta(1) == "Retorno")cout << AMARELO"--> " << aux->seta1->get_lable()<<RESET << " - ";
