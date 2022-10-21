@@ -115,7 +115,7 @@ void ver(){
     cout << VERMELHO "VERMELHO -> AVANCO"<<RESET<<endl;
     cout << ROXO "ROXO -> CRUZAMENTO"<<RESET<<endl;
     cout<<"\nMark = "<<mark<<"\n\n";
-    tam = 1;
+    tam = 0;
     mark = 0;
 }
 
@@ -145,12 +145,15 @@ void deletar_tudo(){
         free(aux);
         aux = inicio;
     }
-    tam = 1;
+    tam = 0;
     mark = 0;
 }
 
-
 void ligacao(string a, string x, string y, string z){
+    string b = x;
+    if(x > y){x = y; y = b;} if(x > z){b = x; x = z; z = b;}
+    if(y > z){b = y; y = z; z = b;}
+
     vertice * aux = inicio;
     while(aux->get_lable() != a){
         aux = aux->prox;
@@ -246,7 +249,7 @@ int main(){
         case 2:
             system("cls");
             
-            cout << "Ligacoes"<< endl;
+            cout << "Digite - caso nao tenha ligacao"<< endl;
             cout << "Vertice: ";
             cin>>a;
             cout<<"Ligar em:\n";
