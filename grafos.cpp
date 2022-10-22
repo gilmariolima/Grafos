@@ -55,7 +55,7 @@ class vertice{
 };
 
 typedef struct pilha{
-    string lable;
+    vertice * vertice;
     struct pilha * prox;
 }pilha;
 
@@ -89,9 +89,9 @@ void cadastrar(){
     cout <<VERDE<<novo->get_lable()<<" Cadastrado"<<RESET<<"\n\n";
 }
 
-void add_pilha(string lable){
+void add_pilha(vertice * vertice){
     pilha * novo = new(pilha);
-    novo->lable = lable;
+    novo->vertice = vertice;
     novo->prox = NULL;
 
     if(topo == NULL){
@@ -249,7 +249,7 @@ void dfs_visit(vertice * aux){
         }
     }
     aux->set_cor("Preto");
-    add_pilha(aux->get_lable());
+    add_pilha(aux);
     mark++;
     aux->set_f(mark);
 }
@@ -257,9 +257,10 @@ void dfs_visit(vertice * aux){
 void ver_pilha(){
     pilha * aux = topo;
     while(aux != NULL){
-        cout << aux->lable;
+        cout << aux->vertice->get_lable() << " - ";
         aux = aux->prox;
     }
+    cout << endl;
 }
 
 int main(){
@@ -274,7 +275,7 @@ int main(){
         cout << "[ 6 ] Ver Pilha"<<endl;
         cout << "[ 0 ] Sair"<<endl<<">> ";
         cin >> opc;
-        switch (opc){
+        switch(opc){
         case 1:
             cadastrar();
             break;
