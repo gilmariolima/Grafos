@@ -54,10 +54,17 @@ class vertice{
         vertice * prox;
 };
 
+typedef struct pilha{
+    string lable;
+    struct pilha * prox;
+}pilha;
+
 int tam = 0;
 int mark = 0;
 vertice * inicio = NULL;
 vertice * fim = NULL;
+pilha * topo = NULL;
+int tam_pilha = 0;
 
 string alfa[] = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 
@@ -80,6 +87,20 @@ void cadastrar(){
     tam++;
     system("cls");
     cout <<VERDE<<novo->get_lable()<<" Cadastrado"<<RESET<<"\n\n";
+}
+
+void add_pilha(string lable){
+    pilha * novo = new(pilha);
+    novo->lable = lable;
+    novo->prox = NULL;
+
+    if(topo == NULL){
+        topo = novo;
+    }else{
+        novo->prox = topo;
+        topo = novo;
+    }
+    tam_pilha++;
 }
 
 
@@ -150,11 +171,12 @@ void deletar_tudo(){
 }
 
 void ligacao(string a, string x, string y, string z){
-    string b = x;
-    if(x > y){x = y; y = b;} if(x > z){b = x; x = z; z = b;}
-    if(y > z){b = y; y = z; z = b;}
-
     vertice * aux = inicio;
+    string b;
+    if(y != "-" && x > y){b = x; x = y; y = b;}
+    if(z != "-" && y > z){b = y; y = z; z = b;}
+    if(y != "-" && x > y){b = x; x = y; y = b;}
+    
     while(aux->get_lable() != a){
         aux = aux->prox;
     }
@@ -227,8 +249,17 @@ void dfs_visit(vertice * aux){
         }
     }
     aux->set_cor("Preto");
+    add_pilha(aux->get_lable());
     mark++;
     aux->set_f(mark);
+}
+
+void ver_pilha(){
+    pilha * aux = topo;
+    while(aux != NULL){
+        cout << aux->lable;
+        aux = aux->prox;
+    }
 }
 
 int main(){
@@ -240,6 +271,7 @@ int main(){
         cout << "[ 3 ] Dfs"<<endl;
         cout << "[ 4 ] Ver"<<endl;
         cout << "[ 5 ] Deletar Tudo"<<endl;
+        cout << "[ 6 ] Ver Pilha"<<endl;
         cout << "[ 0 ] Sair"<<endl<<">> ";
         cin >> opc;
         switch (opc){
@@ -276,6 +308,9 @@ int main(){
         case 5:
             system("cls");
             deletar_tudo();
+            break;
+        case 6:
+            ver_pilha();
             break;
         default:
             break;
