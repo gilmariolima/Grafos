@@ -52,18 +52,15 @@ class vertice{
         vertice * seta3;
 
         vertice * prox;
+        vertice * comp;
 };
-
-typedef struct pilha{
-    vertice * vertice;
-    struct pilha * prox;
-}pilha;
 
 int tam = 0;
 int mark = 0;
 vertice * inicio = NULL;
 vertice * fim = NULL;
-pilha * topo = NULL;
+
+vertice * topo = NULL;
 int tam_pilha = 0;
 
 string alfa[] = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
@@ -73,6 +70,7 @@ void cadastrar(){
     novo->set_lable(alfa[tam]);
     novo->set_cor("Branco");
     novo->prox = NULL;
+    novo->comp = NULL;
     novo->seta1 = NULL;
     novo->seta2 = NULL;
     novo->seta3 = NULL;
@@ -89,20 +87,31 @@ void cadastrar(){
     cout <<VERDE<<novo->get_lable()<<" Cadastrado"<<RESET<<"\n\n";
 }
 
-void add_pilha(vertice * vertice){
-    pilha * novo = new(pilha);
-    novo->vertice = vertice;
-    novo->prox = NULL;
+void add_pilha(vertice * obj){
+    vertice * novo = new(vertice);
+    novo->set_lable(obj->get_lable());
+    novo->set_cor("Branco");
+    novo->prox = obj->prox;
+    novo->comp = NULL;
+    novo->seta1 = obj->seta1;
+    novo->seta2 = obj->seta2;
+    novo->seta3 = obj->seta3;
 
     if(topo == NULL){
         topo = novo;
     }else{
-        novo->prox = topo;
+        novo->comp = topo;
         topo = novo;
     }
-    tam_pilha++;
 }
 
+void ver_comp(){
+    vertice * aux = topo;
+    while(aux != NULL){
+        cout << aux->get_lable() <<"-"<< aux->get_cor() << endl;
+        aux = aux->comp;
+    }
+}
 
 void ver(){
     vertice * aux = inicio;
@@ -254,17 +263,9 @@ void dfs_visit(vertice * aux){
     aux->set_f(mark);
 }
 
-void ver_pilha(){
-    pilha * aux = topo;
-    while(aux != NULL){
-        cout << aux->vertice->get_lable() << " - ";
-        aux = aux->prox;
-    }
-    cout << endl;
-}
-
 int main(){
     int opc = 1;
+    int comp_conex = 0;
     string a,x,y,z;
     while(opc != 0){
         cout << "[ 1 ] Cadastrar"<<endl;
@@ -311,7 +312,7 @@ int main(){
             deletar_tudo();
             break;
         case 6:
-            ver_pilha();
+            ver_comp();
             break;
         default:
             break;
