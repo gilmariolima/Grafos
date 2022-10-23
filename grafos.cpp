@@ -53,6 +53,7 @@ class vertice{
 
         vertice * prox;
         vertice * comp;
+     
 };
 
 int tam = 0;
@@ -62,6 +63,8 @@ vertice * fim = NULL;
 
 vertice * topo = NULL;
 int tam_pilha = 0;
+int comp_conex = 0;
+
 
 string alfa[] = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 
@@ -105,7 +108,7 @@ void add_pilha(vertice * obj){
     }
 }
 
-void ver_comp(){
+void ver_pilha(){
     vertice * aux = topo;
     while(aux != NULL){
         cout << aux->get_lable() <<"-"<< aux->get_cor() << endl;
@@ -263,9 +266,35 @@ void dfs_visit(vertice * aux){
     aux->set_f(mark);
 }
 
+void comps(vertice * aux){
+    if(aux->get_cor() == "Branco"){
+        aux->set_cor("Cinza");
+        if(aux->seta1!=NULL){
+            if(aux->seta1->get_cor() == "Branco"){
+      
+                comps(aux->seta1);
+            }
+            if(aux->seta2 != NULL){
+                if(aux->seta2->get_cor() == "Branco"){
+          
+                    comps(aux->seta2);
+                }
+                if(aux->seta3 != NULL){
+                    if(aux->seta3->get_cor() == "Branco"){
+                 
+                        comps(aux->seta3);
+                    }
+                }
+            }
+        }
+    }
+    aux->set_cor("Preto");
+}
+            
+
 int main(){
     int opc = 1;
-    int comp_conex = 0;
+  
     string a,x,y,z;
     while(opc != 0){
         cout << "[ 1 ] Cadastrar"<<endl;
@@ -312,8 +341,10 @@ int main(){
             deletar_tudo();
             break;
         case 6:
-            ver_comp();
+            ver_pilha();
             break;
+        case 7:
+            cout << "numero de componentes conexas: "<<comp_conex<<endl;
         default:
             break;
         }
