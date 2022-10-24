@@ -266,49 +266,17 @@ void dfs_visit(vertice * aux){
 
 void dfs(vertice * aux){
     while(aux != NULL){
-        if(aux->get_cor() == "Branco")
-            dfs_visit(aux);
-        aux = aux->prox;
-    }
-}
-
-void conexa_visit(vertice * aux){
-    if(aux->get_cor() == "Branco"){
-        aux->set_cor("Cinza");
-        if(aux->seta1!=NULL){
-            if(aux->seta1->get_cor() == "Branco"){
-                conexa_visit(aux->seta1);
-            }
-            if(aux->seta2!=NULL){
-                if(aux->seta2->get_cor() == "Branco"){
-                    conexa_visit(aux->seta2);
-                }
-                if(aux->seta3!=NULL){
-                    if(aux->seta3->get_cor() == "Branco"){
-                        conexa_visit(aux->seta3);
-                    }
-                }    
-            }
-        }
-    }
-    aux->set_cor("Preto");
-}
-
-
-void conexa(vertice * aux){
-    while(aux != NULL){
         if(aux->get_cor() == "Branco"){
             cont++;
-            conexa_visit(aux);
+            dfs_visit(aux);
         }
-        aux = aux->comp;
+        aux = aux->prox;
     }
 }
 
 int main(){
     int opc = 1;
 
-  
     string a,x,y,z;
     while(opc != 0){
         cout << "[ 1 ] Cadastrar"<<endl;
@@ -359,7 +327,6 @@ int main(){
             ver_pilha();
             break;
         case 7:
-            conexa(topo);
             cout << "componentes conexas: " << cont << endl;
         default:
             break;
