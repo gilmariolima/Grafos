@@ -89,8 +89,6 @@ void cadastrar(){
 
 void add_pilha(vertice * obj){
     vertice * novo = new(vertice);
-    novo->set_lable(obj->get_lable());
-    novo->set_cor("Branco");
     novo->prox = obj->prox;
     novo->comp = NULL;
     novo->seta1 = obj->seta1;
