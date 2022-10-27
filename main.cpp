@@ -47,6 +47,8 @@ class vertice{
             else if(id == 2)return nome_seta2;
             else if(id == 3)return nome_seta3;
         }
+        int dis;
+        vertice * pai;
 
         vertice * seta1;
         vertice * seta2;
@@ -57,17 +59,20 @@ class vertice{
         vertice * seta6;
 
         vertice * prox;
-        vertice * comp;
-     
+        vertice * prox_pilha; 
+        vertice * prox_fila;
 };
-vector<int> lista;
+
+int cont = 0;
 int tam = 0;
-int tam_pilha = 0;
+int tam_fila = 0;
 int mark = 0;
+int processo = 0;
 vertice * inicio = NULL;
 vertice * fim = NULL;
-
 vertice * topo = NULL;
+vertice * inicio_fila = NULL;
+vertice * fim_fila = NULL;
 
 string alfa[] = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 
@@ -76,14 +81,9 @@ void cadastrar(){
     novo->set_lable(alfa[tam]);
     novo->set_cor("Branco");
 
-    novo->prox = NULL;
-    novo->comp = NULL;
-    novo->seta1 = NULL;
-    novo->seta2 = NULL;
-    novo->seta3 = NULL;
-    novo->seta4 = NULL;
-    novo->seta5 = NULL;
-    novo->seta6 = NULL;
+    novo->seta1 = NULL;novo->seta2 = NULL;novo->seta3 = NULL;
+    novo->seta4 = NULL;novo->seta5 = NULL;novo->seta6 = NULL;
+    novo->prox = NULL;novo->prox_pilha = NULL;novo->prox_fila = NULL;
 
     if(inicio == NULL){
         inicio = novo;
@@ -97,30 +97,20 @@ void cadastrar(){
     cout <<VERDE<<novo->get_lable()<<" Cadastrado"<<RESET<<"\n\n";
 }
 
-void add_pilha(vertice * obj){
+void add(vertice * aux){
     vertice * novo = new(vertice);
-    novo->set_lable(obj->get_lable());
+    novo->set_lable(aux->get_lable());
     novo->set_cor("Branco");
 
-    novo->comp = NULL;
-    novo->seta1 = obj->seta4;
-    novo->seta2 = obj->seta5;
-    novo->seta3 = obj->seta6;
+    novo->seta1 = aux->seta4;novo->seta2 = aux->seta5;novo->seta3 = aux->seta6;
+    novo->seta4 = NULL;novo->seta5 = NULL;novo->seta6 = NULL;
+    novo->prox = NULL;novo->prox_pilha = NULL;
 
     if(topo == NULL){
         topo = novo;
     }else{
-        novo->comp = topo;
+        novo->prox_pilha = topo;
         topo = novo;
-    }
-    tam_pilha++;
-}
-
-void ver_pilha(){
-    vertice * aux = topo;
-    while(aux != NULL){
-        cout << aux->get_lable() <<"-"<< aux->get_cor() << endl;
-        aux = aux->comp;
     }
 }
 
@@ -177,6 +167,24 @@ void ver_setas(){
     cout << endl;
 }
 
+void ver_pilha(){
+    vertice * aux = topo;
+    while(aux != NULL){
+        cout <<aux->get_lable() << " - ";
+        if(aux->seta1!=NULL){
+            cout << VERDE"--> " << aux->seta1->get_lable()<<RESET << " - ";
+            if(aux->seta2 != NULL){
+                cout << VERDE"--> " << aux->seta2->get_lable()<<RESET << " - ";
+                if(aux->seta3 != NULL)
+                    cout << VERDE"--> " << aux->seta3->get_lable()<<RESET << " - ";
+            }
+        }
+        cout << endl;
+        aux = aux->prox_pilha;
+    }
+    cout << endl;
+}
+
 void deletar_tudo(){
     vertice * aux = inicio;
     while(aux != NULL){
@@ -184,16 +192,9 @@ void deletar_tudo(){
         free(aux);
         aux = inicio;
     }
-    aux = topo;
-    while(aux != NULL){
-        topo = topo->comp;
-        free(aux);
-        aux = topo;
-    }
     tam = 0;
     mark = 0;
     inicio = NULL;
-    topo = NULL;
 }
 
 void inverte_ligacao(string a, string x){
@@ -211,7 +212,6 @@ void inverte_ligacao(string a, string x){
             if(aux->seta4 == NULL) aux->seta4 = aux2;
             else if(aux->seta5 == NULL) aux->seta5 = aux2;
             else if(aux->seta6 == NULL) aux->seta6 = aux2;
-            else cout<<"n deu"<<endl;
         }
     }
 }
@@ -298,67 +298,128 @@ void dfs_visit(vertice * aux){
         }
     }
     aux->set_cor("Preto");
-    add_pilha(aux);
+    if(processo == 0)add(aux);
     mark++;
     aux->set_f(mark);
 }
+/*
+void add_fila(vertice * aux){
+    vertice * novo = new(vertice);
+    novo->set_cor("Branco");
+    novo->seta1 = aux->seta1;
+    novo->seta2 = aux->seta2;
+    novo->seta3 = aux->seta3;
+    novo->prox_fila = NULL;
+    
+    if(inicio_fila == NULL){
+        inicio_fila = novo;
+        fim_fila = novo;
+    }else{
+        fim_fila->prox_fila = novo;
+        fim_fila = novo;
+    }
+    tam_fila++;
+}
 
-void ver_novas_setas(){
-    vertice * aux = topo;
+vertice * desinfileirar(){
+    vertice * aux = inicio;
+    if(tam_fila == 1){
+        inicio_fila = NULL;
+        fim_fila = NULL;
+        tam_fila--;
+        return aux;
+    }else{
+        inicio_fila = inicio_fila->prox_fila;
+        tam_fila--;
+        return aux;
+    }
+}
+
+
+void ver_filas(){
+    vertice * aux = inicio_fila;
+    while(aux != NULL){
+        cout << aux->get_lable() << " - ";
+        cout << aux->dis <<" - "<<aux->pai->get_lable()<<endl;
+        aux = aux->prox_fila;
+    }
+}
+
+void bfs(vertice * aux){
+    vertice * aux2 = inicio;
+    while(aux2 != NULL){
+        aux2->set_cor("Branco");
+        aux2 = aux2->prox;
+    }
+    aux->set_cor("Cinza"); aux->dis = 0; aux->pai = NULL;
+    add_fila(aux);
+    while(inicio_fila != NULL){
+        aux2 = desinfileirar();
+        if(aux2->seta1 != NULL){
+            if(aux2->seta1->get_cor() == "Branco"){
+                aux2->seta1->set_cor("Cinza");
+                aux2->seta1->dis = aux2->dis + 1;
+                aux2->seta1->pai = aux2;
+                add_fila(aux2->seta1);
+            }
+            if(aux2->seta2 != NULL){
+                if(aux2->seta2->get_cor() == "Branco"){
+                    aux2->seta2->set_cor("Cinza");
+                    aux2->seta2->dis = aux2->dis + 1;
+                    aux2->seta2->pai = aux2;
+                    add_fila(aux2->seta2);
+                }
+                if(aux2->seta3 != NULL){
+                    if(aux2->seta3->get_cor() == "Branco"){
+                        aux2->seta3->set_cor("Cinza");
+                        aux2->seta3->dis = aux2->dis + 1;
+                        aux2->seta3->pai = aux2;
+                        add_fila(aux2->seta3);
+                    }
+                }
+            }
+        }
+        aux2->set_cor("Preto");
+    }
+    ver_filas();
+}
+*/
+
+void ver_novas_seta(){
+    vertice * aux = inicio;
     while(aux != NULL){
         cout <<aux->get_lable() << " - ";
-        if(aux->seta1!=NULL){
-            cout << VERDE"--> " << aux->seta1->get_lable()<<RESET << " - ";
-            if(aux->seta2 != NULL){
-                cout << VERDE"--> " << aux->seta2->get_lable()<<RESET << " - ";
-                if(aux->seta3 != NULL)
-                    cout << VERDE"--> " << aux->seta3->get_lable()<<RESET << " - ";
+        if(aux->seta4!=NULL){
+            cout << VERDE"--> " << aux->seta4->get_lable()<<RESET << " - ";
+            if(aux->seta5 != NULL){
+                cout << VERDE"--> " << aux->seta5->get_lable()<<RESET << " - ";
+                if(aux->seta6 != NULL)
+                    cout << VERDE"--> " << aux->seta6->get_lable()<<RESET << " - ";
             }
         }
         cout << endl;
-        aux = aux->comp;
+        aux = aux->prox;
     }
     cout << endl;
 }
 
 void dfs(vertice * aux){
     while(aux != NULL){
-        if(aux->get_cor() == "Branco")
-            dfs_visit(aux);  
+        if(aux->get_cor() == "Branco"){
+            dfs_visit(aux);
+        }  
         aux = aux->prox;
     }
 }
 
 
-void conexa(vertice * aux){
-    if(aux->get_cor() == "Branco"){
-        aux->set_cor("Cinza");
-        if(aux->seta1!=NULL){
-            if(aux->seta1->get_cor() == "Branco"){
-                conexa(aux->seta1);
-            }
-            if(aux->seta2!=NULL){
-                if(aux->seta2->get_cor() == "Branco"){
-                    conexa(aux->seta2);
-                }
-                
-                if(aux->seta3!=NULL){
-                    if(aux->seta3->get_cor() == "Branco"){
-                        conexa(aux->seta3);
-                    }
-                }    
-            }
-        }
-    }
-    aux->set_cor("Preto");
-}
-
-void comp_conexa(vertice * aux){
-    for(int i=0; i<tam_pilha; i++){
+void comp(vertice * aux){
+    while(aux != NULL){
         if(aux->get_cor() == "Branco"){
-            conexa(aux);
+            cont ++;
+            dfs_visit(aux);
         }  
-        aux = aux->comp;
+        aux = aux->prox_pilha;
     }
 }
 
@@ -415,8 +476,10 @@ int main(){
             ver_pilha();
             break;
         case 7:
-            ver_novas_setas();
-            comp_conexa(topo);
+            processo = 1;
+            comp(topo);
+            cout << cont/2 << endl;
+        case 8:
             break;
         default:
             break;
